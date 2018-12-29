@@ -1,6 +1,7 @@
 package sec.project.controller;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,9 @@ public class AccountController {
 
     @Autowired
     private AccountRepository accountRepository;
+    
+    @Autowired
+    private HttpSession session;
 
     @PostConstruct
     public void init() {
@@ -39,7 +43,6 @@ public class AccountController {
         Account accountByName = accountRepository.findByUsername(username);
         Account accountByPassword = accountRepository.findByPassword(password);
 
-        System.out.println(accountByName);
         if (accountByName == null) {
             model.addAttribute("error", "Username not found");
             return "user";
@@ -47,7 +50,8 @@ public class AccountController {
             model.addAttribute("error", "Password not found");
             return "user";
         } else {
-            return "done";
+            session.setAttribute("user", username);
+            return "redirect:/messages";
         }
     }
 

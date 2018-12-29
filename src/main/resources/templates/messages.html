@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Messages</title>
+    </head>
+    <body>
+
+        <h1>Welcome to the discussions!</h1>
+
+        <ul th:each="message: ${messages}">
+            <li th:utext="${message.content}"></li>
+        </ul>
+
+        <form action="#" th:action="@{/messages}" method="POST">
+            <p><label for="content">Add a message</label>: <input type="text" name="content" id="content"/></p>
+            <p><input type="submit" value="Submit" /></p>
+        </form>
+
+    </body>
+</html>
