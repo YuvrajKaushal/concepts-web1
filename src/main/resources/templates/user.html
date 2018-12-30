@@ -16,7 +16,21 @@
             <p><label for="password">Password</label>: <input type="password" name="password" id="password"/></p>
             <p><input type="submit" value="Submit" /></p>
         </form>
+        
+        <br/><br/>
+        
+        <h2>If you do not have an account, create one here.</h2>
+        <h4>Password should have a minimum of 6 characters.</h4>
 
-        <p></p>
+        <div th:if="${createError}">
+            <div th:text="${createError}" style="color:red"></div>
+        </div>
+
+        <form action="#" th:action="@{/create}" method="POST">
+            <p><label for="username">New username</label>: <input type="text" name="username" id="username"/></p>
+            <p><label for="password">New password</label>: <input type="password" name="password" id="password"/></p>
+            <p><input type="submit" value="Submit" /></p>
+        </form>
+
     </body>
 </html>

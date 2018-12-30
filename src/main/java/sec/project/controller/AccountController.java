@@ -3,6 +3,7 @@ package sec.project.controller;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,14 +17,17 @@ public class AccountController {
 
     @Autowired
     private AccountRepository accountRepository;
-    
+
     @Autowired
     private HttpSession session;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostConstruct
     public void init() {
         Account admin = new Account("admin", "admin");
-        Account user = new Account("jack", "qwerty");
+        Account user = new Account("jabba", "tatooine");
         accountRepository.save(admin);
         accountRepository.save(user);
     }
@@ -34,12 +38,12 @@ public class AccountController {
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public String loadForm() {
+    public String index() {
         return "user";
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.POST)
-    public String submitForm(Model model, @RequestParam String username, @RequestParam String password) {
+    public String login(Model model, @RequestParam String username, @RequestParam String password) {
         Account accountByName = accountRepository.findByUsername(username);
         Account accountByPassword = accountRepository.findByPassword(password);
 
@@ -52,6 +56,20 @@ public class AccountController {
         } else {
             session.setAttribute("user", username);
             return "redirect:/messages";
+        }
+    }
+
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public String create(Model model, @RequestParam String username, @RequestParam String password) {
+        Account accountByName = accountRepository.findByUsername(username);
+
+        if (accountByName != null) {
+            model.addAttribute("createError", "Username already exists. Please use another.");
+            return "user";
+        } else {
+            Account account = new Account(username, password);
+            accountRepository.save(account);
+            return "redirect:/user";
         }
     }
 
